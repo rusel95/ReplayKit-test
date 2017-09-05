@@ -7,19 +7,40 @@
 //
 
 import UIKit
+import ReplayKit
 
 class ViewController: UIViewController {
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+    let recorder = RPScreenRecorder.shared()
+        
+   
+    @IBAction func recorderTapped(_ sender: Any) {
+        recorder.startRecording { (error) in
+            if let error = error {
+                print(error)
+            }
+        }
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+
+    @IBAction func recorderStopped(_ sender: Any) {
+        recorder.stopRecording { (previewViewController, error) in
+            if error != nil {
+                print(error!)
+            } else {
+                previewViewController?.previewControllerDelegate = self
+                self.present(previewViewController!, animated: true, completion: { 
+                    print("presented new VC")
+                })
+            }
+        }
     }
-
-
 }
 
+extension ViewController: RPPreviewViewControllerDelegate {
+    func previewControllerDidFinish(_ previewController: RPPreviewViewController) {
+        self.dismiss(animated: true) { 
+            print("dismissed new VC")
+        }
+    }
+}
