@@ -12,16 +12,17 @@ import ReplayKit
 class ViewController: UIViewController {
 
     let recorder = RPScreenRecorder.shared()
-        
-   
+    
     @IBAction func recorderTapped(_ sender: Any) {
+        recorder.isMicrophoneEnabled = true
+        
+        recorder.isCameraEnabled = true
         recorder.startRecording { (error) in
             if let error = error {
                 print(error)
             }
         }
     }
-
 
     @IBAction func recorderStopped(_ sender: Any) {
         recorder.stopRecording { (previewViewController, error) in
